@@ -21,8 +21,8 @@ func main() {
 	}
 
 	db := config.SetupDatabase()
-	_ = config.SetupRedis()
-	noteRepo := repository.NewSqliteNoteRepository(db)
+	rdb := config.SetupRedis()
+	noteRepo := repository.NewSqliteNoteRepository(db, rdb)
 	noteService := service.NewNoteService(noteRepo)
 	trafficRepo := repository.NewSqliteTrafficRepository(db)
 	trafficService := service.NewTrafficService(trafficRepo)
