@@ -61,7 +61,17 @@ func (r *sqliteNoteRepository) Delete(id uint, jid string) (int64, error) {
 	}
 	return res.RowsAffected, res.Error
 }
+
 func (r *sqliteNoteRepository) DeleteExpired(date string) (int64, error) {
+	var affectedNotes []domain.Note
+	r.db.Where("tanggal < ?", date).Find(&affectedNotes)
 	res := r.db.Where("tanggal < ?", date).Delete(&domain.Note{})
+	if res.Error == nil && res.RowsAffected > 0 {
+		ctx := context.Background()
+		for _, note := range affectedNotes {
+			r.rdb.Del(ctx, "notes:"+note.JidGrub)
+		}
+	}
+	
 	return res.RowsAffected, res.Error
 }
