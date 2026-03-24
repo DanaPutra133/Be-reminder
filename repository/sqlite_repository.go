@@ -24,13 +24,13 @@ func (r *sqliteNoteRepository) GetByJidGrub(jid string) ([]domain.Note, error) {
 	return notes, err
 }
 
-func (r *sqliteNoteRepository) Update(jid string, data map[string]interface{}) (int64, error) {
-	res := r.db.Model(&domain.Note{}).Where("jid_grub = ?", jid).Updates(data)
+func (r *sqliteNoteRepository) Update(id uint, jid string, data map[string]interface{}) (int64, error) { 
+	res := r.db.Model(&domain.Note{}).Where("id = ? AND jid_grub = ?", id, jid).Updates(data)
 	return res.RowsAffected, res.Error
 }
 
-func (r *sqliteNoteRepository) Delete(jid string) (int64, error) {
-	res := r.db.Where("jid_grub = ?", jid).Delete(&domain.Note{})
+func (r *sqliteNoteRepository) Delete(id uint, jid string) (int64, error) {
+	res := r.db.Where("id = ? AND jid_grub = ?", id, jid).Delete(&domain.Note{})
 	return res.RowsAffected, res.Error
 }
 

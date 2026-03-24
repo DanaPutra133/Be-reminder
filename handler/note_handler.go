@@ -3,6 +3,7 @@ package handler
 import (
 	"backend-noted/domain"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -53,8 +54,16 @@ func (h *NoteHandler) Get(c *gin.Context) {
 
 func (h *NoteHandler) Update(c *gin.Context) {
 	jidGrub := c.Query("jidgrub")
-	if jidGrub == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Parameter ?jidgrub= wajib diisi"})
+	idStr := c.Query("id") 
+
+	if jidGrub == "" || idStr == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Parameter ?jidgrub= dan &id= wajib diisi"})
+		return
+	}
+
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Format ID tidak valid, harus berupa angka"})
 		return
 	}
 
@@ -64,13 +73,13 @@ func (h *NoteHandler) Update(c *gin.Context) {
 		return
 	}
 
-	rows, err := h.Service.UpdateNote(jidGrub, updateData)
+	rows, err := h.Service.UpdateNote(uint(id), jidGrub, updateData)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal update data"})
 		return
 	}
 	if rows == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"message": "Data dengan jidgrub tersebut tidak ditemukan"})
+		c.JSON(http.StatusNotFound, gin.H{"message": "Data dengan jidgrub dan ID tersebut tidak ditemukan"})
 		return
 	}
 
@@ -79,12 +88,20 @@ func (h *NoteHandler) Update(c *gin.Context) {
 
 func (h *NoteHandler) Delete(c *gin.Context) {
 	jidGrub := c.Query("jidgrub")
-	if jidGrub == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Parameter ?jidgrub= wajib diisi"})
+	idStr := c.Query("id") 
+
+	if jidGrub == "" || idStr == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Parameter ?jidgrub= dan &id= wajib diisi"})
 		return
 	}
 
-	rows, err := h.Service.DeleteNote(jidGrub)
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Format ID tidak valid, harus berupa angka"})
+		return
+	}
+
+	rows, err := h.Service.DeleteNote(uint(id), jidGrub)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menghapus data"})
 		return
@@ -94,5 +111,5 @@ func (h *NoteHandler) Delete(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"status": "sukses", "message": "Berhasil menghapus noted untuk grub tersebut"})
+	c.JSON(http.StatusOK, gin.H{"status": "sukses", "message": "Berhasil menghapus noted"})
 }

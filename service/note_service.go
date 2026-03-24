@@ -32,10 +32,10 @@ func (s *noteService) GetNotes(jid string) ([]domain.Note, error) {
 	return s.repo.GetByJidGrub(jid)
 }
 
-func (s *noteService) UpdateNote(jid string, data map[string]interface{}) (int64, error) {
-	return s.repo.Update(jid, data)
+func (s *noteService) UpdateNote(id uint, jid string, data map[string]interface{}) (int64, error) {
+	return s.repo.Update(id, jid, data)
 }
 
-func (s *noteService) DeleteNote(jid string) (int64, error) {
-	return s.repo.Delete(jid)
+func (s *noteService) DeleteNote(id uint, jid string) (int64, error) {
+	return s.repo.Delete(id, jid)
 }

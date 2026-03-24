@@ -12,14 +12,14 @@ type Note struct {
 type NoteRepository interface {
 	Create(note *Note) error
 	GetByJidGrub(jid string) ([]Note, error)
-	Update(jid string, data map[string]interface{}) (int64, error)
-	Delete(jid string) (int64, error)
+	Update(id uint, jid string, data map[string]interface{}) (int64, error)
+	Delete(id uint, jid string) (int64, error)
 	DeleteExpired(date string) (int64, error)
 }
 
 type NoteService interface {
 	CreateNote(note *Note) error
 	GetNotes(jid string) ([]Note, error)
-	UpdateNote(jid string, data map[string]interface{}) (int64, error)
-	DeleteNote(jid string) (int64, error)
+	UpdateNote(id uint, jid string, data map[string]interface{}) (int64, error)
+	DeleteNote(id uint, jid string) (int64, error)
 }
