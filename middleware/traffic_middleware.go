@@ -15,7 +15,7 @@ func TrafficLogger(repo domain.TrafficRepository) gin.HandlerFunc {
 		}
 
 		now := time.Now()
-		roundedTime := time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), 0, 0, 0, now.Location())
+		roundedTime := time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), 0, 0, now.Location())
 		timestampMilli := roundedTime.UnixMilli()
 
 		method := c.Request.Method
@@ -26,7 +26,7 @@ func TrafficLogger(repo domain.TrafficRepository) gin.HandlerFunc {
 			incGet = 1
 		case "POST":
 			incPost = 1
-		case "PATCH", "PUT": 
+		case "PATCH", "PUT":
 			incPut = 1
 		case "DELETE":
 			incDel = 1

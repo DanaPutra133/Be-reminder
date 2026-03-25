@@ -27,7 +27,7 @@ func (h *TrafficHandler) GetServerStats(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"status": "sukses",
+		"status": true,
 		"data":   stats,
 	})
 }
